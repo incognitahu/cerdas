@@ -1,0 +1,59 @@
+# =============================================================
+# Cerdas — .gitignore
+# =============================================================
+
+# ---- Data (too large for git, or contains user data) ----
+data/raw/*.csv
+data/processed/*.csv
+data/*.zip
+
+# ---- Models (large binary files) ----
+models/
+*.pt
+*.bin
+*.safetensors
+*.h5
+*.pkl
+
+# ---- Vector DB ----
+chroma_db/
+
+# ---- Secrets ----
+.env
+.env.local
+*.key
+
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+.venv
+
+# ---- Jupyter ----
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# ---- IDE ----
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# ---- OS ----
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ---- Logs ----
+*.log
+logs/
+
+# ---- But DO include: ----
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+!models/.gitkeep
