@@ -21,51 +21,34 @@ def clean_text_tfidf(text: str) -> str:
 
     return text
 
+def count_letter_words(text: str) -> int: # counting real worlds
+    """Count words that contain at least one letter"""
+    if not isinstance(text, str):
+        return 0
+
+    words = text.split()
+    real_words = [w for w in words if any(c.isalpha() for c in w)]
+
+    return len(real_words)
+
 df = pd.read_csv("data/raw/reviews.csv")
 
 if "Unnamed: 0" in df.columns:
     df = df.drop(columns=["Unnamed: 0"])
 
-# print("\n--- Shape ---")
-# print(df.shape)
-# print("\n--- Columns ---")
-# print(df.columns.tolist())
-# print("\n--- Dtypes ---")
-# print(df.dtypes)
-# print("\n--- First 3 rows ---")
-# print(df.head(3))
-# print("\n--- Null counts ---")
-# print(df.isnull().sum())
-
-# print("\n--- Sample reviews ---")
-
-# print("\nShortest reviews:")
-# pd.set_option('display.max_colwidth', 800)
-# df['_text_length'] = df['text'].str.len()
-# print(df.nsmallest(3, '_text_length')[['_text_length', 'text']])
-
-# print("\nLongest reviews:")
-# print(df.nlargest(3, '_text_length')[['_text_length', 'text']])
-
-# df.drop(columns=['_text_length'])
-
-# ----------------------------------------------------
-
-# print(repr(clean_text("Hello <b>WORLD</b>! Visit http://example.com   ")))
-# print(repr(clean_text("👍👍👍")))
-# print(repr(clean_text(None)))
-# print(repr(clean_text(123)))
-# print(repr(clean_text("Barang BAGUS, packaging RAPI!!!")))
-
-
-# apply clean_text function to the data frame
 df['text_cleaned'] = df['text'].apply(clean_text)
 df['text_tfidf'] = df['text'].apply(clean_text_tfidf)
 
-print(df[['text', 'text_cleaned', 'text_tfidf']].head(5))
-print(f"\nNull counts:")
-print(f"  text_cleaned: {df['text_cleaned'].isnull().sum()}")
-print(f"  text_tfidf:   {df['text_tfidf'].isnull().sum()}")
-print(f"\nEmpty string counts:")
-print(f"  text_cleaned: {(df['text_cleaned'] == '').sum()}")
-print(f"  text_tfidf:   {(df['text_tfidf'] == '').sum()}")
+# df = df[df['text_cleaned'].str.len() >= 5] # Boolean indexing
+
+
+
+# Filter useless reviews (emoji-only, numbers-only, single-symbol)
+# before = len(df)
+df = df[df['text_cleaned'].apply(count_letter_words) >= 2].reset_index(drop=True)
+# after = len(df)
+# print(f"Filtered {before - after:,} useless reviews ({100*(before-after)/before:.1f}%)")
+# print(f"{after:,} reviews remaining")
+
+
+
